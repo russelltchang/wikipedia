@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> <!--This needs to be above jQuery-->
+
+<style>
+
+    body {
+        font-family: Lobster;
+        background-color: beige;
+    }
+    
+    img {
+        max-width: 30%;
+        height: 90px;
+        margin-top: 40px;
+    }
+    
+    .text {
+        text-align: center;
+    }
+    
+    .row {
+        margin-top: 30px;
+    }
+    
+    ul {
+        width: 70%;
+        margin: auto;
+    }
+    
+    li {
+        background: beige;
+        padding: 5px;
+        margin-top: 3px;
+        text-align: left;
+        list-style-type: none;
+    }
+    
+    li:hover {
+        background: grey;
+    }
+
+    .fab {
+        margin-top: 20px;
+    }
+    
+</style>
+    
+<script>
+
+$(document).ready(function() {
+    
+    $(".search").click(function() {
+                       
+      var searchTerm = $(".searchTerm").val()
+    
+      var url = "https://wikipedia.org/w/api.php?action=opensearch&search=" + searchTerm + "&format=json&callback=?";
+    
+      $.ajax({
+        type: "GET",
+        url: url,
+        async: false,
+        dataType: "json",
+        success: function(data) {
+          $("#output").html(''); //this clears list if you search new item
+          for(i=0;i<data[1].length;i++) {
+            $("#output").append("<li><a href= " + data[3][i] + ">" + data[1][i] + "</a><p>" + data[2][i] + "</p></li>");
+          }
+          $(".searchTerm").val('');  
+          },
+        error: function(errorMessage) {
+            alert("Error");
+        }
+      })  
+    }) 
+    
+  //needs to be outside click function scope
+  $(".searchTerm").keypress(function(e) {
+  if (e.which == 13) {
+      $(".search").click();
+  }
+  });
+    
+});
+    
+</script>  
+</head>
+
+<body>	
+  <div class="container-fluid">
+    <div class="text">
+      <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1122px-Wikipedia-logo-v2.svg.png">
+      <h1>Wikipedia API Search</h1> 
+      <h4>Click icon for random article</h4>  
+      <a href="https://en.wikipedia.org/wiki/Special:Random" target="_blank"><i class="btn btn-primary fab fa-wikipedia-w" style="font-size:2em"></i></a>
+      <div class="row">
+        <input class="form-control searchTerm col-lg-3 offset-lg-4">
+        <button class="btn btn-primary search col-1">Search</button>
+      </div>
+      <ul id="output" class="text center"></ul>
+    </div>    
+  </div>
+</body>
+</html>
